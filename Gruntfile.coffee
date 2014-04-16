@@ -24,14 +24,19 @@ module.exports = (grunt) ->
         src: 'build/js/**/*.js'
 
     coffee:
-      options:
-        sourceMap: true
       build:
         expand: true
         cwd: 'coffee'
         src: '**/*.coffee'
         dest: 'build/js/'
-        ext: '.js'
+        ext: '.src.js'
+
+    copy:
+      main:
+        expand: true
+        cwd: 'build/js/'
+        src: '**'
+        dest: 'release/<%= pkg.version %>/js/'
 
     uglify:
       options:
@@ -42,8 +47,8 @@ module.exports = (grunt) ->
       js:
         files: [
           expand: true
-          cwd: 'build/js/'
-          src: '**/*.js'
+          cwd: 'release/<%= pkg.version %>/js/'
+          src: '**/*.src.js'
           dest: 'release/<%= pkg.version %>/js/'
           ext: '.min.js'
         ]
@@ -56,6 +61,7 @@ module.exports = (grunt) ->
         src: ['build/js/**/*.js', 'release/<%= pkg.version %>/js/**/*.js', 'build/css/**/*.css', 'release/<%= pkg.version %>/css/**/*.css']
 
   grunt.loadNpmTasks 'grunt-contrib-clean'
+  grunt.loadNpmTasks 'grunt-contrib-copy'
   grunt.loadNpmTasks 'grunt-contrib-jshint'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-less'
@@ -64,5 +70,5 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'build', ['clean', 'coffee']
   grunt.registerTask 'test', ['build']
-  grunt.registerTask 'publish', ['test', 'uglify', 'usebanner', 'clean:build']
+  grunt.registerTask 'publish', ['test', 'copy', 'uglify', 'usebanner', 'clean:build']
   grunt.registerTask 'default', ['test']

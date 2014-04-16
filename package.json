@@ -1,6 +1,6 @@
 {
   "name": "bilibili_hkj",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "某兵库北的超少女黑科技 2nd EDITION ver2.31.",
   "homepage": "http://keyfunc.github.io/bilibili_hkj",
   "scripts": {
@@ -29,6 +29,7 @@
     "grunt-banner": "^0.2.2",
     "grunt-contrib-clean": "^0.5.0",
     "grunt-contrib-coffee": "^0.10.1",
+    "grunt-contrib-copy": "^0.5.0",
     "grunt-contrib-jshint": "^0.9.2",
     "grunt-contrib-uglify": "^0.4.0"
   },

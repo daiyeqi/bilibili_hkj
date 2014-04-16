@@ -1,4 +1,4 @@
-window.bilibili_hkj = ((d,w) ->
+return window.bilibili_hkj = ((d,w) ->
 
   @__tips = (elem, tips...) ->
     pElem = d.createElement("p")
@@ -31,7 +31,7 @@ window.bilibili_hkj = ((d,w) ->
       iframe = d.createElement("iframe");
       iframe.height = 482
       iframe.width = 950
-      iframe.src = "https://secure.bilibili.tv/secure,cid=" + info.cid + "&amp;aid="+ params[1]
+      iframe.src = "https://secure.bilibili.tv/secure,cid=" + info.cid + "&amp;aid="+ params[2]
       iframe.setAttribute "class", "player"
       iframe.setAttribute "border", 0
       iframe.setAttribute "scrolling", "no"
@@ -75,18 +75,18 @@ window.bilibili_hkj = ((d,w) ->
   tip_panel.id = "_tip_panel"
   d.body.appendChild tip_panel
 
-  params = /http:\/\/www\.bilibili\.tv\/video\/av([0-9]+)\/(?:index_([0-9]+)\.html)?/.exec(d.URL);
+  @params = /http:\/\/(www\.bilibili\.tv|bilibili\.kankanews\.com)\/video\/av([0-9]+)\/(?:index_([0-9]+)\.html)?/.exec(d.URL);
   iframePlay = /https:\/\/secure\.bilibili\.tv\/secure,cid=([0-9]+)(?:&aid=([0-9]+))?/;
 
   if (!params)
     return -> __tips tip_panel, "扬帆远洋扫广场", "民主自由不可挡"
 
-  api = "http://api.bilibili.tv/view?type=json&appkey=12737ff7776f1ade&id=" + params[1] + if params[2] isnt undefined then "&page=" + params[2] else ""
+  api = "http://api.bilibili.tv/view?type=json&appkey=12737ff7776f1ade&id=" + params[2] + if params[3] isnt undefined then "&page=" + params[3] else ""
   url = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url=%22" + encodeURIComponent(api) + "%22&format=json&callback=cbfunc"
 
-  if !!d.getElementById "bofqi_embed" or (->
+  if !!d.getElementById("bofqi_embed") or (->
     iframes = d.getElementsByTagName "iframe"
-    for key in iframes
+    for key of iframes
       if !!iframePlay.exec(iframes[key].src)
         return yes
     return no
@@ -108,4 +108,4 @@ window.bilibili_hkj = ((d,w) ->
   return ->
     __tips tip_panel, "正在获取神秘代码"
 
-)(document, window)
+)(document, window)()
