@@ -4,8 +4,8 @@
 
 ## 更新日志
 
-20140416 修复bug，添加对bilibili.kankanews.com的支持
-20140416 使用Coffeescript重构项目
+* 20140416 修复bug，添加对bilibili.kankanews.com的支持
+* 20140416 使用Coffeescript重构项目
 
 ## 如何使用
 
