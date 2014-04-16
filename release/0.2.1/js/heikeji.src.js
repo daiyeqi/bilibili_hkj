@@ -1,3 +1,8 @@
+/*!
+ * bilibili_hkj v0.2.1 (http://keyfunc.github.io/bilibili_hkj)
+ * Copyright 2012-2014 Key Dai
+ * Licensed under MIT (http://github.com/keyfunc/bilibili_hkj/blob/master/LICENSE)
+ */
 (function() {
   var __slice = [].slice;
 
