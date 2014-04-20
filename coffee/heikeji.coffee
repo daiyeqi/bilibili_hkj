@@ -1,8 +1,32 @@
 ((d,w) ->
 
+  @__tips = (elem, sleep, tips...) ->
+    pElem = d.createElement("p")
+    for tip in tips
+      span = d.createElement("span")
+      if typeof span.textContent isnt undefined
+        span.textContent = tip
+      else
+        span.innerText = tip
+      pElem.appendChild span
+    elem.appendChild pElem
+    __hidden pElem, sleep
+
+  @__hidden = (elem, sleep) ->
+    setTimeout(->
+      opacity = 1
+      pid = setInterval(->
+        opacity -= 0.01
+        elem.style.opacity = opacity
+        if opacity < 0
+          w.clearInterval pid
+          elem.parentNode.removeChild elem
+      , 20)
+    , sleep)
+
   # 判断是否是b站, 非b站连接不执行
   params = /http:\/\/(www\.bilibili\.tv|bilibili\.kankanews\.com)\/video\/av([0-9]+)\/(?:index_([0-9]+)\.html)?/.exec(d.URL)
-  tpModel = !params && !!(/http:\/\/(www\.bilibili\.tv|bilibili\.kankanews\.com)?/.exec(d.URL))
+  tpModel = !params && !!(/http:\/\/(www\.bilibili\.tv|bilibili\.kankanews\.com)/.exec(d.URL))
 
   head = d.getElementsByTagName("head")[0]
   style = d.createElement "style"
@@ -15,10 +39,10 @@
   d.body.appendChild tip_panel
 
   if !params && !tpModel
-      w.bilibili_hkj = (->
-        __tips tip_panel, 5000, "痴萝莉, 爱腐女", "控锁骨, 恋百合"
-      )()
-      return
+    w.bilibili_hkj = (->
+      __tips tip_panel, 5000, "痴萝莉, 爱腐女", "控锁骨, 恋百合"
+    )()
+    return
 
   # 初始化相关方法与组件
 
@@ -54,31 +78,6 @@
         break
       else
         loadjQuery = no
-
-  @__tips = (elem, sleep, tips...) ->
-    pElem = d.createElement("p")
-    for tip in tips
-      span = d.createElement("span")
-      if typeof span.textContent isnt undefined
-        span.textContent = tip
-      else
-        span.innerText = tip
-      pElem.appendChild span
-    elem.appendChild pElem
-    __hidden pElem, sleep
-
-  @__hidden = (elem, sleep) ->
-    setTimeout(->
-      opacity = 1
-      pid = setInterval(->
-        opacity -= 0.01
-        elem.style.opacity = opacity
-        if opacity < 0
-          w.clearInterval pid
-          elem.parentNode.removeChild elem
-      , 20)
-    , sleep)
-
 
   # 正常体位
   normalModel = (params) ->

@@ -4,6 +4,7 @@
 
 ## 更新日志
 
+* 20140420 修复无法判断是否为b站的bug
 * 20140420 新增2P模式(对应Letv), 增加jQuery支持
 * 20140416 修复bug, 添加对bilibili.kankanews.com的支持
 * 20140416 使用Coffeescript重构项目
