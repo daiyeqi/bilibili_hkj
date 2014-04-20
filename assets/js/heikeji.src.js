@@ -1,5 +1,5 @@
 /*!
- * bilibili_hkj v0.2.2 (http://keyfunc.github.io/bilibili_hkj)
+ * bilibili_hkj v0.2.3 (http://keyfunc.github.io/bilibili_hkj)
  * Copyright 2012-2014 Key Dai
  * Licensed under MIT (http://github.com/keyfunc/bilibili_hkj/blob/master/LICENSE)
  */
@@ -8,8 +8,39 @@
 
   (function(d, w) {
     var blhkj_main, current_version, head, i, jQueryVersion, loadjQuery, normalModel, params, style, tip_panel, tpModel, v, version, _$, _i, _len, _v;
+    this.__tips = function() {
+      var elem, pElem, sleep, span, tip, tips, _i, _len;
+      elem = arguments[0], sleep = arguments[1], tips = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
+      pElem = d.createElement("p");
+      for (_i = 0, _len = tips.length; _i < _len; _i++) {
+        tip = tips[_i];
+        span = d.createElement("span");
+        if (typeof span.textContent !== void 0) {
+          span.textContent = tip;
+        } else {
+          span.innerText = tip;
+        }
+        pElem.appendChild(span);
+      }
+      elem.appendChild(pElem);
+      return __hidden(pElem, sleep);
+    };
+    this.__hidden = function(elem, sleep) {
+      return setTimeout(function() {
+        var opacity, pid;
+        opacity = 1;
+        return pid = setInterval(function() {
+          opacity -= 0.01;
+          elem.style.opacity = opacity;
+          if (opacity < 0) {
+            w.clearInterval(pid);
+            return elem.parentNode.removeChild(elem);
+          }
+        }, 20);
+      }, sleep);
+    };
     params = /http:\/\/(www\.bilibili\.tv|bilibili\.kankanews\.com)\/video\/av([0-9]+)\/(?:index_([0-9]+)\.html)?/.exec(d.URL);
-    tpModel = !params && !!(/http:\/\/(www\.bilibili\.tv|bilibili\.kankanews\.com)?/.exec(d.URL));
+    tpModel = !params && !!(/http:\/\/(www\.bilibili\.tv|bilibili\.kankanews\.com)/.exec(d.URL));
     head = d.getElementsByTagName("head")[0];
     style = d.createElement("style");
     style.type = "text/css";
@@ -61,37 +92,6 @@
         }
       }
     }
-    this.__tips = function() {
-      var elem, pElem, sleep, span, tip, tips, _j, _len1;
-      elem = arguments[0], sleep = arguments[1], tips = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
-      pElem = d.createElement("p");
-      for (_j = 0, _len1 = tips.length; _j < _len1; _j++) {
-        tip = tips[_j];
-        span = d.createElement("span");
-        if (typeof span.textContent !== void 0) {
-          span.textContent = tip;
-        } else {
-          span.innerText = tip;
-        }
-        pElem.appendChild(span);
-      }
-      elem.appendChild(pElem);
-      return __hidden(pElem, sleep);
-    };
-    this.__hidden = function(elem, sleep) {
-      return setTimeout(function() {
-        var opacity, pid;
-        opacity = 1;
-        return pid = setInterval(function() {
-          opacity -= 0.01;
-          elem.style.opacity = opacity;
-          if (opacity < 0) {
-            w.clearInterval(pid);
-            return elem.parentNode.removeChild(elem);
-          }
-        }, 20);
-      }, sleep);
-    };
     normalModel = function(params) {
       var api, bofqi, jsonp, url;
       api = "http://api.bilibili.tv/view?type=json&appkey=12737ff7776f1ade&id=" + params[2] + (params[3] !== void 0 ? "&page=" + params[3] : "");
