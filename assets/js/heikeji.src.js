@@ -1,5 +1,5 @@
 /*!
- * bilibili_hkj v0.2.3 (http://keyfunc.github.io/bilibili_hkj)
+ * bilibili_hkj v0.2.4 (http://keyfunc.github.io/bilibili_hkj)
  * Copyright 2012-2014 Key Dai
  * Licensed under MIT (http://github.com/keyfunc/bilibili_hkj/blob/master/LICENSE)
  */
@@ -7,23 +7,41 @@
   var __slice = [].slice;
 
   (function(d, w) {
-    var blhkj_main, current_version, head, i, jQueryVersion, loadjQuery, normalModel, params, style, tip_panel, tpModel, v, version, _$, _i, _len, _v;
-    this.__tips = function() {
-      var elem, pElem, sleep, span, tip, tips, _i, _len;
-      elem = arguments[0], sleep = arguments[1], tips = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
-      pElem = d.createElement("p");
+    var blhkj_main, callouts, current_version, head, i, jQueryVersion, loadjQuery, messageExpires, normalModel, params, style, tpModel, v, version, _$, _i, _len, _v;
+    this._c_tip = function() {
+      var callout, elem, tip, tips, _i, _len, _p;
+      elem = arguments[0], tips = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+      callout = d.createElement("div");
+      callout.className = "tip";
       for (_i = 0, _len = tips.length; _i < _len; _i++) {
         tip = tips[_i];
-        span = d.createElement("span");
-        if (typeof span.textContent !== void 0) {
-          span.textContent = tip;
-        } else {
-          span.innerText = tip;
-        }
-        pElem.appendChild(span);
+        _p = d.createElement("p");
+        _p.innerHTML = tip;
+        callout.appendChild(_p);
       }
-      elem.appendChild(pElem);
-      return __hidden(pElem, sleep);
+      elem.appendChild(callout);
+      return __hidden(callout, 5000);
+    };
+    this._c_message = function() {
+      var callout, elem, message, messages, title, url, _a, _h4, _i, _len, _p;
+      elem = arguments[0], title = arguments[1], url = arguments[2], messages = 4 <= arguments.length ? __slice.call(arguments, 3) : [];
+      callout = d.createElement("div");
+      callout.className = "message";
+      _h4 = d.createElement("h4");
+      _a = d.createElement("a");
+      _a.innerHTML = title;
+      _a.href = url;
+      _a.target = "_blank";
+      _h4.appendChild(_a);
+      callout.appendChild(_h4);
+      for (_i = 0, _len = messages.length; _i < _len; _i++) {
+        message = messages[_i];
+        _p = d.createElement("p");
+        _p.innerHTML = message;
+        callout.appendChild(_p);
+      }
+      elem.appendChild(callout);
+      return __hidden(callout, 20000);
     };
     this.__hidden = function(elem, sleep) {
       return setTimeout(function() {
@@ -44,16 +62,20 @@
     head = d.getElementsByTagName("head")[0];
     style = d.createElement("style");
     style.type = "text/css";
-    style.appendChild(d.createTextNode('#_tip_panel{position:fixed;right:16px;bottom:32px;z-index:100}#_tip_panel p{position:relative;background:rgba(0,0,0,.9);box-shadow:0 1px 2px rgba(0,0,0,.5);border-radius:2px;margin:10px 0px;padding:7px 10px 7px 5px;z-index:100}#_tip_panel p span{color:#FFF;display:block;padding-left:5px;border-left:5px solid #C00;font-family:"Segoe UI","Helvetica Neue",Helvetica,Arial,"Microsoft YaHei","STHeiti","SimSun",Sans-serif;font-size:12px;font-weight:bold;text-align:left;line-height:20px;z-index:100}'));
+    style.appendChild(d.createTextNode("#_callouts {\n  position: fixed;\n  right: 16px;\n  bottom: 32px;\n  z-index: 100;\n}\n#_callouts div {\n  position: relative;\n  margin: 10px 0;\n  padding: 7px 15px 7px 12px;\n  text-align:left;\n  border-left:5px solid #eee;\n  font: 13px/1.65 \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, \"Hiragino Kaku Gothic Pro\", \"Meiryo\", \"Hiragino Sans GB\", \"Microsoft YaHei\", \"STHeiti\", \"SimSun\", Sans-serif;\n  z-index: 100;\n}\n#_callouts div p,\n#_callouts div h4 {\n  margin: 0;\n}\n#_callouts div.message {\n  background-color: #fdf7f7;\n  border-color: #d9534f;\n}\n#_callouts div.message h4,\n#_callouts div.message h4 * {\n  color: #d9534f;\n  text-decoration: none;\n}\n#_callouts div.tip {\n  background-color: #f4f8fa;\n  border-color: #5bc0de;\n}"));
     head.appendChild(style);
-    tip_panel = d.createElement("div");
-    tip_panel.id = "_tip_panel";
-    d.body.appendChild(tip_panel);
+    callouts = d.createElement("div");
+    callouts.id = "_callouts";
+    d.body.appendChild(callouts);
     if (!params && !tpModel) {
-      w.bilibili_hkj = (function() {
-        return __tips(tip_panel, 5000, "痴萝莉, 爱腐女", "控锁骨, 恋百合");
+      (w.bilibili_hkj = function() {
+        return _c_tip(callouts, "痴萝莉, 爱腐女", "控锁骨, 恋百合");
       })();
       return;
+    }
+    messageExpires = (new Date("2014/04/21")).getTime() + 15 * 1000 * 3600 * 24;
+    if (new Date().getTime() - messageExpires < 0) {
+      _c_message(callouts, "增加2P模式这个功能啦~~", "http://keyfunc.github.io/bilibili_hkj", "2P模式可以使用bilibili播放器播放Letv片源哦!", "妈妈再也不用担心我的学习啦");
     }
     jQueryVersion = "1.11.0";
     this.Loader = {
@@ -98,7 +120,7 @@
       url = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url=%22" + encodeURIComponent(api) + "%22&format=json&callback=cbfunc";
       bofqi = d.getElementById("bofqi");
       bofqi.innerHTML = "";
-      __tips(tip_panel, 5000, "成功干掉原先的播放器");
+      _c_tip(callouts, "成功干掉原先的播放器");
       jsonp = d.createElement("script");
       jsonp.setAttribute("src", url);
       jsonp.onload = function() {
@@ -106,8 +128,8 @@
         return jsonp = null;
       };
       head.appendChild(jsonp);
-      w.bilibili_hkj = (function() {
-        return __tips(tip_panel, 5000, "正在获取神秘代码");
+      (w.bilibili_hkj = function() {
+        return _c_tip(callouts, "正在获取神秘代码");
       })();
     };
     blhkj_main = function() {
@@ -127,8 +149,8 @@
             return normalModel(params);
           });
         });
-        w.bilibili_hkj = (function() {
-          return __tips(tip_panel, 5000, "2P模式初始化完成", "＼(・ω・＼)丧尸！(／・ω・)／bishi");
+        (w.bilibili_hkj = function() {
+          return _c_tip(callouts, "2P模式初始化完成", "＼(・ω・＼)丧尸！(／・ω・)／bishi");
         })();
       } else {
         if (!!d.getElementById("bofqi_embed") || (function() {
@@ -142,8 +164,8 @@
           }
           return false;
         })()) {
-          w.bilibili_hkj = (function() {
-            return __tips(tip_panel, 5000, "bilibili满状态中", "＼(・ω・＼)丧尸！(／・ω・)／bishi");
+          (w.bilibili_hkj = function() {
+            return _c_tip(callouts, "bilibili满状态中", "＼(・ω・＼)丧尸！(／・ω・)／bishi");
           })();
           return;
         }
@@ -154,7 +176,7 @@
       var iframe, info, onMessage;
       info = arguments[0].query.results.json;
       if (info.cid !== void 0) {
-        __tips(tip_panel, 5000, "获取神秘代码成功", "神秘代码ID: " + info.cid);
+        _c_tip(callouts, "获取神秘代码成功", "神秘代码ID: " + info.cid);
         $(".info h2").text(info.title).attr("title", info.title);
         iframe = d.createElement("iframe");
         iframe.height = 482;
@@ -186,11 +208,11 @@
             }
           }, 1000);
         }
-        return w.bilibili_hkj = (function() {
-          return __tips(tip_panel, 5000, "Mission Completed", "嗶哩嗶哩 - ( ゜- ゜)つロ  乾杯~");
+        return (w.bilibili_hkj = function() {
+          return _c_tip(callouts, "Mission Completed", "嗶哩嗶哩 - ( ゜- ゜)つロ  乾杯~");
         })();
       } else {
-        __tips(tip_panel, 5000, "非常抱歉, bishi姥爷不肯给神秘代码", "要不你吼一声\"兵库北\"后再试试?");
+        _c_tip(callouts, "非常抱歉, bishi姥爷不肯给神秘代码", "要不你吼一声\"兵库北\"后再试试?");
         return w.bilibili_hkj = null;
       }
     };
