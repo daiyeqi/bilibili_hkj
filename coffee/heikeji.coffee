@@ -1,16 +1,31 @@
 ((d,w) ->
 
-  @__tips = (elem, sleep, tips...) ->
-    pElem = d.createElement("p")
+  @_c_tip = (elem, tips...) ->
+    callout = d.createElement("div")
+    callout.className = "tip"
     for tip in tips
-      span = d.createElement("span")
-      if typeof span.textContent isnt undefined
-        span.textContent = tip
-      else
-        span.innerText = tip
-      pElem.appendChild span
-    elem.appendChild pElem
-    __hidden pElem, sleep
+      _p = d.createElement("p")
+      _p.innerHTML = tip
+      callout.appendChild _p
+    elem.appendChild callout
+    __hidden callout, 5000
+
+  @_c_message = (elem, title, url, messages...) ->
+    callout = d.createElement("div")
+    callout.className = "message"
+    _h4 = d.createElement("h4")
+    _a = d.createElement("a")
+    _a.innerHTML = title
+    _a.href = url
+    _a.target = "_blank"
+    _h4.appendChild _a
+    callout.appendChild _h4
+    for message in messages
+      _p = d.createElement("p")
+      _p.innerHTML = message
+      callout.appendChild _p
+    elem.appendChild callout
+    __hidden callout, 20000
 
   @__hidden = (elem, sleep) ->
     setTimeout(->
@@ -31,18 +46,57 @@
   head = d.getElementsByTagName("head")[0]
   style = d.createElement "style"
   style.type = "text/css"
-  style.appendChild d.createTextNode('#_tip_panel{position:fixed;right:16px;bottom:32px;z-index:100}#_tip_panel p{position:relative;background:rgba(0,0,0,.9);box-shadow:0 1px 2px rgba(0,0,0,.5);border-radius:2px;margin:10px 0px;padding:7px 10px 7px 5px;z-index:100}#_tip_panel p span{color:#FFF;display:block;padding-left:5px;border-left:5px solid #C00;font-family:"Segoe UI","Helvetica Neue",Helvetica,Arial,"Microsoft YaHei","STHeiti","SimSun",Sans-serif;font-size:12px;font-weight:bold;text-align:left;line-height:20px;z-index:100}')
+  style.appendChild d.createTextNode("""
+    #_callouts {
+      position: fixed;
+      right: 16px;
+      bottom: 32px;
+      z-index: 100;
+    }
+    #_callouts div {
+      position: relative;
+      margin: 10px 0;
+      padding: 7px 15px 7px 12px;
+      text-align:left;
+      border-left:5px solid #eee;
+      font: 13px/1.65 "Segoe UI", "Helvetica Neue", Helvetica, Arial, "Hiragino Kaku Gothic Pro", "Meiryo", "Hiragino Sans GB", "Microsoft YaHei", "STHeiti", "SimSun", Sans-serif;
+      z-index: 100;
+    }
+    #_callouts div p,
+    #_callouts div h4 {
+      margin: 0;
+    }
+    #_callouts div.message {
+      background-color: #fdf7f7;
+      border-color: #d9534f;
+    }
+    #_callouts div.message h4,
+    #_callouts div.message h4 * {
+      color: #d9534f;
+      text-decoration: none;
+    }
+    #_callouts div.tip {
+      background-color: #f4f8fa;
+      border-color: #5bc0de;
+    }
+  """)
   head.appendChild style
 
-  tip_panel = d.createElement "div"
-  tip_panel.id = "_tip_panel"
-  d.body.appendChild tip_panel
+  callouts = d.createElement "div"
+  callouts.id = "_callouts"
+  d.body.appendChild callouts
 
   if !params && !tpModel
-    w.bilibili_hkj = (->
-      __tips tip_panel, 5000, "痴萝莉, 爱腐女", "控锁骨, 恋百合"
+    (w.bilibili_hkj =->
+      _c_tip callouts, "痴萝莉, 爱腐女", "控锁骨, 恋百合"
     )()
     return
+
+  # 显示公告
+  messageExpires = (new Date("2014/04/21")).getTime() + 15 * 1000 * 3600 * 24
+
+  if new Date().getTime() - messageExpires < 0
+    _c_message callouts, "增加2P模式这个功能啦~~", "http://keyfunc.github.io/bilibili_hkj", "2P模式可以使用bilibili播放器播放Letv片源哦!", "妈妈再也不用担心我的学习啦"
 
   # 初始化相关方法与组件
 
@@ -87,7 +141,7 @@
 
     bofqi = d.getElementById "bofqi"
     bofqi.innerHTML = ""
-    __tips tip_panel, 5000, "成功干掉原先的播放器"
+    _c_tip callouts, "成功干掉原先的播放器"
 
     jsonp = d.createElement "script"
     jsonp.setAttribute "src", url
@@ -96,8 +150,8 @@
       jsonp = null
     head.appendChild jsonp
 
-    w.bilibili_hkj = (->
-      __tips tip_panel, 5000, "正在获取神秘代码"
+    (w.bilibili_hkj =->
+      _c_tip callouts, "正在获取神秘代码"
     )()
     return
 
@@ -120,8 +174,8 @@
           Loader.importJS 'http://interface.bilibili.cn/count?aid=' + params[2], head
           normalModel(params)
 
-      w.bilibili_hkj = (->
-        __tips tip_panel, 5000, "2P模式初始化完成", "＼(・ω・＼)丧尸！(／・ω・)／bishi"
+      (w.bilibili_hkj =->
+        _c_tip callouts, "2P模式初始化完成", "＼(・ω・＼)丧尸！(／・ω・)／bishi"
       )()
       return
 
@@ -135,8 +189,8 @@
             return yes
         return no
       )()
-        w.bilibili_hkj = (->
-          __tips tip_panel, 5000, "bilibili满状态中", "＼(・ω・＼)丧尸！(／・ω・)／bishi"
+        (w.bilibili_hkj =->
+          _c_tip callouts, "bilibili满状态中", "＼(・ω・＼)丧尸！(／・ω・)／bishi"
         )()
         return
 
@@ -146,7 +200,7 @@
   @cbfunc =->
     info = arguments[0].query.results.json
     if info.cid isnt undefined
-      __tips tip_panel, 5000, "获取神秘代码成功", "神秘代码ID: " + info.cid
+      _c_tip callouts, "获取神秘代码成功", "神秘代码ID: " + info.cid
 
       $(".info h2").text(info.title).attr("title", info.title)
 
@@ -178,12 +232,12 @@
             eval evalCode
         , 1000)
 
-      w.bilibili_hkj = (->
-        __tips tip_panel, 5000, "Mission Completed", "嗶哩嗶哩 - ( ゜- ゜)つロ  乾杯~"
+      (w.bilibili_hkj =->
+        _c_tip callouts, "Mission Completed", "嗶哩嗶哩 - ( ゜- ゜)つロ  乾杯~"
       )()
 
     else
-      __tips tip_panel, 5000, "非常抱歉, bishi姥爷不肯给神秘代码", "要不你吼一声\"兵库北\"后再试试?"
+      _c_tip callouts, "非常抱歉, bishi姥爷不肯给神秘代码", "要不你吼一声\"兵库北\"后再试试?"
       w.bilibili_hkj = null
 
   # 同步加载jQuery
