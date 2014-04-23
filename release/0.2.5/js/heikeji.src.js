@@ -60,7 +60,7 @@
     _params = /http:\/\/(www\.bilibili\.tv|bilibili\.kankanews\.com)?\/video\/av([0-9]+)\/(?:index_([0-9]+)\.html)?/.exec(d.URL);
     _b_url_r = /http:\/\/(www\.bilibili\.tv|bilibili\.kankanews\.com)/.exec(d.URL);
     tpModel = !_params && !!_b_url_r;
-    _bilibili_url = _b_url_r[0];
+    _bilibili_url = _b_url_r || _b_url_r[0];
     head = d.getElementsByTagName("head")[0];
     style = d.createElement("style");
     style.type = "text/css";
