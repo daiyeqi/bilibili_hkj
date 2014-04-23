@@ -1,5 +1,5 @@
 /*!
- * bilibili_hkj v0.2.4 (http://keyfunc.github.io/bilibili_hkj)
+ * bilibili_hkj v0.2.5 (http://keyfunc.github.io/bilibili_hkj)
  * Copyright 2012-2014 Key Dai
  * Licensed under MIT (http://github.com/keyfunc/bilibili_hkj/blob/master/LICENSE)
  */
@@ -7,7 +7,7 @@
   var __slice = [].slice;
 
   (function(d, w) {
-    var blhkj_main, callouts, current_version, head, i, jQueryVersion, loadjQuery, messageExpires, normalModel, params, style, tpModel, v, version, _$, _i, _len, _v;
+    var blhkj_main, callouts, current_version, head, i, jQueryVersion, loadjQuery, messageExpires, normalModel, style, tpModel, v, version, _$, _b_url_r, _bilibili_url, _i, _len, _params, _v;
     this._c_tip = function() {
       var callout, elem, tip, tips, _i, _len, _p;
       elem = arguments[0], tips = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
@@ -57,8 +57,10 @@
         }, 20);
       }, sleep);
     };
-    params = /http:\/\/(www\.bilibili\.tv|bilibili\.kankanews\.com)\/video\/av([0-9]+)\/(?:index_([0-9]+)\.html)?/.exec(d.URL);
-    tpModel = !params && !!(/http:\/\/(www\.bilibili\.tv|bilibili\.kankanews\.com)/.exec(d.URL));
+    _params = /http:\/\/(www\.bilibili\.tv|bilibili\.kankanews\.com)?\/video\/av([0-9]+)\/(?:index_([0-9]+)\.html)?/.exec(d.URL);
+    _b_url_r = /http:\/\/(www\.bilibili\.tv|bilibili\.kankanews\.com)/.exec(d.URL);
+    tpModel = !_params && !!_b_url_r;
+    _bilibili_url = _b_url_r[0];
     head = d.getElementsByTagName("head")[0];
     style = d.createElement("style");
     style.type = "text/css";
@@ -67,7 +69,7 @@
     callouts = d.createElement("div");
     callouts.id = "_callouts";
     d.body.appendChild(callouts);
-    if (!params && !tpModel) {
+    if (!_params && !tpModel) {
       (w.bilibili_hkj = function() {
         return _c_tip(callouts, "痴萝莉, 爱腐女", "控锁骨, 恋百合");
       })();
@@ -75,7 +77,7 @@
     }
     messageExpires = (new Date("2014/04/21")).getTime() + 15 * 1000 * 3600 * 24;
     if (new Date().getTime() - messageExpires < 0) {
-      _c_message(callouts, "增加2P模式这个功能啦~~", "http://keyfunc.github.io/bilibili_hkj", "2P模式可以使用bilibili播放器播放Letv片源哦!", "妈妈再也不用担心我的学习啦");
+      _c_message(callouts, "增加2P模式这个功能啦~~", "http://keyfunc.github.io/bilibili_hkj/", "2P模式可以使用bilibili播放器播放Letv片源哦!", "妈妈再也不用担心我的学习啦");
     }
     jQueryVersion = "1.11.0";
     this.Loader = {
@@ -114,9 +116,9 @@
         }
       }
     }
-    normalModel = function(params) {
+    normalModel = function(_params) {
       var api, bofqi, jsonp, url;
-      api = "http://api.bilibili.tv/view?type=json&appkey=12737ff7776f1ade&id=" + params[2] + (params[3] !== void 0 ? "&page=" + params[3] : "");
+      api = "http://api.bilibili.tv/view?type=json&appkey=12737ff7776f1ade&id=" + _params[2] + (_params[3] !== void 0 ? "&page=" + _params[3] : "");
       url = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url=%22" + encodeURIComponent(api) + "%22&format=json&callback=cbfunc";
       bofqi = d.getElementById("bofqi");
       bofqi.innerHTML = "";
@@ -135,19 +137,40 @@
     blhkj_main = function() {
       if (tpModel) {
         $("a[href*='/video/av']").click(function(event) {
-          var $z;
+          var $z, _title;
           event.preventDefault();
-          params = /(\/video|video)\/av([0-9]+)?/.exec($(this).attr("href"));
-          $z = $(".z").first();
-          return $z.load("http://www.bilibili.tv/video/av877489/ .z:first", function() {
+          _params = /(\/video|video)\/av([0-9]+)?/.exec($(this).attr("href"));
+          _title = $(this).text();
+          $(".z").remove();
+          $z = $("<div class=\"z\"></div>");
+          $(".header").after($z);
+          return $z.load(_bilibili_url + "/video/av877489/ .z:first", function() {
             $(".cover_image", $z).hide();
             $(".tminfo span[typeof='v:Breadcrumb']", $z).remove();
             $(".tminfo time", $z).remove();
-            $(".info h2").text("").attr("title", "");
-            $(".common .comm img").attr("onclick", $(".common .comm img").attr("onclick").replace("877489", params[2]));
-            Loader.importJS('http://interface.bilibili.cn/count?aid=' + params[2], head);
-            return normalModel(params);
+            $(".info .sf a:first", $z).attr("href", $(".info .sf a:first", $z).attr("href").replace("877489", _params[2]));
+            $(".info .sf a:last", $z).attr("href", $(".info .sf a:last", $z).attr("href").replace("877489", _params[2]));
+            $(".info .sf a:last", $z).attr("onclick", $(".info .sf a:last", $z).attr("onclick").replace("877489", _params[2]));
+            $(".ad-f", $z).remove();
+            $(".ad-e1", $z).remove();
+            $(".ad-e2", $z).remove();
+            $(".ad-e3", $z).remove();
+            $(".ad-e4", $z).remove();
+            $(".info h2", $z).text("").attr("title", "");
+            $(".intro", $z).text("");
+            $(".common .comm img", $z).attr("onclick", $(".common .comm img", $z).attr("onclick").replace("877489", _params[2]));
+            $("#newtag a", $z).attr("onclick", $("#newtag a", $z).attr("onclick").replace("877489", _params[2]));
+            $("#recommend_frmPost input[name='aid']", $z).val(_params[2]);
+            if (w.history.pushState !== void 0) {
+              w.history.pushState(null, _title, _bilibili_url + "/video/av" + _params[2]);
+            }
+            Loader.importJS('http://static.hdslb.com/js/page.arc.js', head);
+            Loader.importJS('http://interface.bilibili.cn/count?aid=' + _params[2], head);
+            return normalModel(_params);
           });
+        });
+        $(w).on("popstate", function(event) {
+          return w.location.replace(d.location);
         });
         (w.bilibili_hkj = function() {
           return _c_tip(callouts, "2P模式初始化完成", "＼(・ω・＼)丧尸！(／・ω・)／bishi");
@@ -169,7 +192,7 @@
           })();
           return;
         }
-        return normalModel(params);
+        return normalModel(_params);
       }
     };
     this.cbfunc = function() {
@@ -177,11 +200,16 @@
       info = arguments[0].query.results.json;
       if (info.cid !== void 0) {
         _c_tip(callouts, "获取神秘代码成功", "神秘代码ID: " + info.cid);
-        $(".info h2").text(info.title).attr("title", info.title);
+        if (tpModel) {
+          $(".info h2").text(info.title).attr("title", info.title);
+          $(".intro").text(info.description);
+          this.mid = info.mid;
+          kwtags(info.tag.split(","), "");
+        }
         iframe = d.createElement("iframe");
         iframe.height = 482;
         iframe.width = 950;
-        iframe.src = "https://secure.bilibili.tv/secure,cid=" + info.cid + "&amp;aid=" + params[2];
+        iframe.src = "https://secure.bilibili.tv/secure,cid=" + info.cid + "&amp;aid=" + _params[2];
         iframe.setAttribute("class", "player");
         iframe.setAttribute("border", 0);
         iframe.setAttribute("scrolling", "no");
