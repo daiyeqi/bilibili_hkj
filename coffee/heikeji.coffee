@@ -41,8 +41,8 @@
 
   # 判断是否是b站, 非b站连接不执行
 
-  _params = /http:\/\/(www\.bilibili\.tv|bilibili\.kankanews\.com)?\/video\/av([0-9]+)\/(?:index_([0-9]+)\.html)?/.exec(d.URL)
-  _b_url_r = (/http:\/\/(www\.bilibili\.tv|bilibili\.kankanews\.com)/.exec(d.URL))
+  _params = /http:\/\/(www\.bilibili\.com|bilibili\.kankanews\.com)?\/video\/av([0-9]+)\/(?:index_([0-9]+)\.html)?/.exec(d.URL)
+  _b_url_r = (/http:\/\/(www\.bilibili\.com|bilibili\.kankanews\.com)/.exec(d.URL))
   tpModel = !_params && !!_b_url_r
   _bilibili_url = if !_b_url_r then null else _b_url_r[0]
 
