@@ -41,8 +41,8 @@
 
   # 判断是否是b站, 非b站连接不执行
 
-  _params = /http:\/\/(www\.bilibili\.com|bilibili\.kankanews\.com)?\/video\/av([0-9]+)\/(?:index_([0-9]+)\.html)?/.exec(d.URL)
-  _b_url_r = (/http:\/\/(www\.bilibili\.com|bilibili\.kankanews\.com)/.exec(d.URL))
+  _params = /http:\/\/(www\.bilibili\.com|www\.bilibili\.tv|bilibili\.kankanews\.com)?\/video\/av([0-9]+)\/(?:index_([0-9]+)\.html)?/.exec(d.URL)
+  _b_url_r = (/http:\/\/(www\.bilibili\.com|www\.bilibili\.tv|bilibili\.kankanews\.com)/.exec(d.URL))
   tpModel = !_params && !!_b_url_r
   _bilibili_url = if !_b_url_r then null else _b_url_r[0]
 
@@ -96,14 +96,14 @@
     return
 
   # 显示公告
-  messageExpires = (new Date("2014/04/21")).getTime() + 15 * 1000 * 3600 * 24
+  messageExpires = (new Date("2014/06/20")).getTime() + 15 * 1000 * 3600 * 24
 
   if new Date().getTime() - messageExpires < 0
-    _c_message callouts, "增加2P模式这个功能啦~~", "http://keyfunc.github.io/bilibili_hkj/", "2P模式可以使用bilibili播放器播放Letv片源哦!", "妈妈再也不用担心我的学习啦"
+    _c_message callouts, "添加对bilibili.com的支持", "http://keyfunc.github.io/bilibili_hkj/", "修复因bilibili调整域名导致黑科技失效的问题"
 
   # 初始化相关方法与组件
 
-  jQueryVersion = "1.11.0"
+  jQueryVersion = "1.11.1"
 
   @Loader =
     importJS: (url, head, func) ->
@@ -139,7 +139,7 @@
   # 正常体位
   normalModel = (_params) ->
 
-    api = "http://api.bilibili.tv/view?type=json&appkey=12737ff7776f1ade&id=" + _params[2] + if _params[3] isnt undefined then "&page=" + _params[3] else ""
+    api = "http://api.bilibili.com/view?type=json&appkey=12737ff7776f1ade&id=" + _params[2] + if _params[3] isnt undefined then "&page=" + _params[3] else ""
     url = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url=%22" + encodeURIComponent(api) + "%22&format=json&callback=cbfunc"
 
     bofqi = d.getElementById "bofqi"
@@ -206,7 +206,7 @@
 
       if !!d.getElementById("bofqi_embed") or (->
         iframes = d.getElementsByTagName "iframe"
-        iframePlay = /https:\/\/secure\.bilibili\.tv\/secure,cid=([0-9]+)(?:&aid=([0-9]+))?/
+        iframePlay = /https:\/\/secure\.bilibili\.com\/secure,cid=([0-9]+)(?:&aid=([0-9]+))?/
         for key of iframes
           if !!iframePlay.exec(iframes[key].src)
             return yes
@@ -235,7 +235,7 @@
       iframe = d.createElement("iframe")
       iframe.height = 482
       iframe.width = 950
-      iframe.src = "https://secure.bilibili.tv/secure,cid=" + info.cid + "&amp;aid="+ _params[2]
+      iframe.src = "https://secure.bilibili.com/secure,cid=" + info.cid + "&amp;aid="+ _params[2]
       iframe.setAttribute "class", "player"
       iframe.setAttribute "border", 0
       iframe.setAttribute "scrolling", "no"
@@ -246,7 +246,7 @@
       #增加iframe通讯功能
       if w.postMessage
         onMessage = (e) ->
-          if e.origin is "https://secure.bilibili.tv" and e.data.substr(0, 6) is "secJS:"
+          if e.origin is "https://secure.bilibili.com" and e.data.substr(0, 6) is "secJS:"
             eval e.data.substr(6)
         if w.addEventListener
           w.addEventListener "message", onMessage, false
