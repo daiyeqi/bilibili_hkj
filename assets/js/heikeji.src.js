@@ -1,5 +1,5 @@
 /*!
- * bilibili_hkj v0.2.6 (http://keyfunc.github.io/bilibili_hkj)
+ * bilibili_hkj v0.2.7 (http://keyfunc.github.io/bilibili_hkj)
  * Copyright 2012-2014 Key Dai
  * Licensed under MIT (http://github.com/keyfunc/bilibili_hkj/blob/master/LICENSE)
  */
@@ -75,9 +75,9 @@
       })();
       return;
     }
-    messageExpires = (new Date("2014/06/20")).getTime() + 15 * 1000 * 3600 * 24;
+    messageExpires = (new Date("2014/08/23")).getTime() + 15 * 1000 * 3600 * 24;
     if (new Date().getTime() - messageExpires < 0) {
-      _c_message(callouts, "添加对bilibili.com的支持", "http://keyfunc.github.io/bilibili_hkj/", "修复因bilibili调整域名导致黑科技失效的问题");
+      _c_message(callouts, "修复了2P模式失效的问题", "http://keyfunc.github.io/bilibili_hkj/", "修复“用手机看”无法正常显示问题");
     }
     jQueryVersion = "1.11.1";
     this.Loader = {
@@ -148,7 +148,7 @@
             $(".cover_image", $z).hide();
             $(".tminfo span[typeof='v:Breadcrumb']", $z).remove();
             $(".tminfo time", $z).remove();
-            $(".info .sf a:first", $z).attr("href", $(".info .sf a:first", $z).attr("href").replace("877489", _params[2]));
+            $("＃assdown", $z).attr("href", $("＃assdown", $z).attr("href").replace("877489", _params[2]));
             $(".info .sf a:last", $z).attr("href", $(".info .sf a:last", $z).attr("href").replace("877489", _params[2]));
             $(".info .sf a:last", $z).attr("onclick", $(".info .sf a:last", $z).attr("onclick").replace("877489", _params[2]));
             $(".ad-f", $z).remove();
@@ -165,6 +165,7 @@
               w.history.pushState(null, _title, _bilibili_url + "/video/av" + _params[2]);
             }
             Loader.importJS('http://static.hdslb.com/js/page.arc.js', head);
+            Loader.importJS('http://static.hdslb.com/js/jquery.qrcode.min.js', head);
             Loader.importJS('http://interface.bilibili.cn/count?aid=' + _params[2], head);
             return normalModel(_params);
           });
