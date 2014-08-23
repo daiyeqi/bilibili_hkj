@@ -174,7 +174,7 @@
           $(".cover_image", $z).hide()
           $(".tminfo span[typeof='v:Breadcrumb']", $z).remove()
           $(".tminfo time", $z).remove()
-          $("＃assdown", $z).attr("href", $("＃assdown", $z).attr("href").replace("877489", _params[2]))
+          $("#assdown", $z).attr("href", $("#assdown", $z).attr("href").replace("877489", _params[2]))
           $(".info .sf a:last", $z).attr("href", $(".info .sf a:last", $z).attr("href").replace("877489", _params[2]))
           $(".info .sf a:last", $z).attr("onclick", $(".info .sf a:last", $z).attr("onclick").replace("877489", _params[2]))
           $(".ad-f", $z).remove()
