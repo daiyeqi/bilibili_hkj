@@ -54,7 +54,7 @@
       position: fixed;
       right: 16px;
       bottom: 32px;
-      z-index: 100;
+      z-index: 999;
     }
     #_callouts div {
       position: relative;
@@ -63,7 +63,7 @@
       text-align:left;
       border-left:5px solid #eee;
       font: 13px/1.65 "Segoe UI", "Helvetica Neue", Helvetica, Arial, "Hiragino Kaku Gothic Pro", "Meiryo", "Hiragino Sans GB", "Microsoft YaHei", "STHeiti", "SimSun", Sans-serif;
-      z-index: 100;
+      z-index: 999;
     }
     #_callouts div p,
     #_callouts div h4 {
@@ -96,10 +96,10 @@
     return
 
   # 显示公告
-  messageExpires = (new Date("2014/08/23")).getTime() + 15 * 1000 * 3600 * 24
+  messageExpires = (new Date("2014/10/6")).getTime() + 15 * 1000 * 3600 * 24
 
   if new Date().getTime() - messageExpires < 0
-    _c_message callouts, "修复了2P模式失效的问题", "http://keyfunc.github.io/bilibili_hkj/", "修复“用手机看”无法正常显示问题"
+    _c_message callouts, "修复新版bilibili下2P模式失效问题", "http://keyfunc.github.io/bilibili_hkj/", "重构部分代码，增加异常处理"
 
   # 初始化相关方法与组件
 
@@ -115,6 +115,17 @@
           func()
       script.src = url
       head.appendChild script
+
+    importCSS: (url, head, func) ->
+      css = d.createElement "link"
+      css.type = "text/css"
+      css.rel = "stylesheet"
+      css.onload =->
+        console.log "onLoad: " + url
+        if func isnt undefined
+          func()
+      css.href = url
+      head.appendChild css
 
   # 判断是否需要重新加载jQuery
   loadjQuery = yes
@@ -142,8 +153,10 @@
     api = "http://api.bilibili.com/view?type=json&appkey=12737ff7776f1ade&id=" + _params[2] + if _params[3] isnt undefined then "&page=" + _params[3] else ""
     url = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url=%22" + encodeURIComponent(api) + "%22&format=json&callback=cbfunc"
 
-    bofqi = d.getElementById "bofqi"
-    bofqi.innerHTML = ""
+    # bofqi = d.getElementById "bofqi"
+    # bofqi.innerHTML = ""
+    $("#bofqi").empty()
+    $("#bofqi").append("<div id='player_placeholder' class='player'></div>")
     _c_tip callouts, "成功干掉原先的播放器"
 
     jsonp = d.createElement "script"
@@ -171,27 +184,35 @@
         $z = $("<div class=\"z\"></div>")
         $(".header").after($z)
         $z.load _bilibili_url + "/video/av877489/ .z:first", ->
-          $(".cover_image", $z).hide()
-          $(".tminfo span[typeof='v:Breadcrumb']", $z).remove()
-          $(".tminfo time", $z).remove()
-          $("#assdown", $z).attr("href", $("#assdown", $z).attr("href").replace("877489", _params[2]))
-          $(".info .sf a:last", $z).attr("href", $(".info .sf a:last", $z).attr("href").replace("877489", _params[2]))
-          $(".info .sf a:last", $z).attr("onclick", $(".info .sf a:last", $z).attr("onclick").replace("877489", _params[2]))
-          $(".ad-f", $z).remove()
-          $(".ad-e1", $z).remove()
-          $(".ad-e2", $z).remove()
-          $(".ad-e3", $z).remove()
-          $(".ad-e4", $z).remove()
-          $(".info h2", $z).text("").attr("title", "")
-          $(".intro", $z).text("")
-          $(".common .comm img", $z).attr("onclick", $(".common .comm img", $z).attr("onclick").replace("877489", _params[2]))
-          $("#newtag a", $z).attr("onclick", $("#newtag a", $z).attr("onclick").replace("877489", _params[2]))
-          $("#recommend_frmPost input[name='aid']", $z).val(_params[2])
+          try
+            $(".cover_image", $z).hide()
+            $(".tminfo span[typeof='v:Breadcrumb']", $z).remove()
+            $(".tminfo time", $z).remove()
+            #$("#assdown", $z).attr("href", $("#assdown", $z).attr("href").replace("877489", _params[2]))
+            $(".info .fav_btn_top", $z).attr("onclick", $(".info .fav_btn_top", $z).attr("onclick").replace("877489", _params[2]))
+            $(".arc-tool-bar .fav a", $z).attr("href", $(".arc-tool-bar .fav a", $z).attr("href").replace("877489", _params[2]))
+            $(".arc-tool-bar .fav a", $z).attr("onclick", $(".arc-tool-bar .fav a", $z).attr("onclick").replace("877489", _params[2]))
+            $(".ad-f", $z).remove()
+            $(".ad-e1", $z).remove()
+            $(".ad-e2", $z).remove()
+            #$(".ad-e3", $z).remove()
+            #$(".ad-e4", $z).remove()
+            $(".info h2", $z).text("").attr("title", "")
+            $(".intro", $z).text("")
+            $(".common .comm img", $z).attr("onclick", $(".common .comm img", $z).attr("onclick").replace("877489", _params[2]))
+            $("#newtag a", $z).attr("onclick", $("#newtag a", $z).attr("onclick").replace("877489", _params[2]))
+            $("#rate_frm", $z).attr("aid", _params[2])
+          catch error
+            console.log error
           if w.history.pushState isnt undefined
             w.history.pushState(null, _title, _bilibili_url + "/video/av" + _params[2])
           Loader.importJS 'http://static.hdslb.com/js/page.arc.js', head
           Loader.importJS 'http://static.hdslb.com/js/jquery.qrcode.min.js', head
           Loader.importJS 'http://interface.bilibili.cn/count?aid=' + _params[2], head
+          Loader.importJS 'http://static.hdslb.com/js/swfobject.js', head
+          Loader.importJS 'http://static.hdslb.com/js/video.min.js', head
+          Loader.importCSS 'http://static.hdslb.com/css/bpoint/bpoints.css', head
+          Loader.importJS 'http://static.hdslb.com/js/bpoint/bpoints.js', head
           normalModel _params
 
       $(w).on("popstate", (event) ->
@@ -205,7 +226,7 @@
 
     else
 
-      if !!d.getElementById("bofqi_embed") or (->
+      if !!d.getElementById("player_placeholder") or !!d.getElementById("bofqi_embed") or (->
         iframes = d.getElementsByTagName "iframe"
         iframePlay = /https:\/\/secure\.bilibili\.com\/secure,cid=([0-9]+)(?:&aid=([0-9]+))?/
         for key of iframes
@@ -231,35 +252,37 @@
         $(".intro").text(info.description)
         @mid = info.mid
         kwtags(info.tag.split(","), "")
+        $("title").text(info.title)
 
+      EmbedPlayer('player', "http://static.hdslb.com/play.swf", "cid=" + info.cid + "&aid=" +  _params[2])
 
-      iframe = d.createElement("iframe")
-      iframe.height = 482
-      iframe.width = 950
-      iframe.src = "https://secure.bilibili.com/secure,cid=" + info.cid + "&amp;aid="+ _params[2]
-      iframe.setAttribute "class", "player"
-      iframe.setAttribute "border", 0
-      iframe.setAttribute "scrolling", "no"
-      iframe.setAttribute "frameborder", "no"
-      iframe.setAttribute "framespacing", 0
-      bofqi.appendChild iframe
-
-      #增加iframe通讯功能
-      if w.postMessage
-        onMessage = (e) ->
-          if e.origin is "https://secure.bilibili.com" and e.data.substr(0, 6) is "secJS:"
-            eval e.data.substr(6)
-        if w.addEventListener
-          w.addEventListener "message", onMessage, false
-        else if w.attachEvent
-          w.attachEvent "onmessage", onMessage
-
-      else
-        setInterval(->
-          if evalCode = __GetCookie '__secureJS'
-            __SetCookie '__secureJS', ''
-            eval evalCode
-        , 1000)
+      # iframe = d.createElement("iframe")
+      # iframe.height = 482
+      # iframe.width = 950
+      # iframe.src = "https://secure.bilibili.com/secure,cid=" + info.cid + "&amp;aid="+ _params[2]
+      # iframe.setAttribute "class", "player"
+      # iframe.setAttribute "border", 0
+      # iframe.setAttribute "scrolling", "no"
+      # iframe.setAttribute "frameborder", "no"
+      # iframe.setAttribute "framespacing", 0
+      # bofqi.appendChild iframe
+      #
+      # #增加iframe通讯功能
+      # if w.postMessage
+      #   onMessage = (e) ->
+      #     if e.origin is "https://secure.bilibili.com" and e.data.substr(0, 6) is "secJS:"
+      #       eval e.data.substr(6)
+      #   if w.addEventListener
+      #     w.addEventListener "message", onMessage, false
+      #   else if w.attachEvent
+      #     w.attachEvent "onmessage", onMessage
+      #
+      # else
+      #   setInterval(->
+      #     if evalCode = __GetCookie '__secureJS'
+      #       __SetCookie '__secureJS', ''
+      #       eval evalCode
+      #   , 1000)
 
       (w.bilibili_hkj =->
         _c_tip callouts, "Mission Completed", "嗶哩嗶哩 - ( ゜- ゜)つロ  乾杯~"
